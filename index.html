@@ -57,11 +57,9 @@
             text-transform: uppercase;
         }
 
-        /* CSS cho ngày tháng */
         .date-display {
             font-size: 0.8rem;
             color: #fbbf24;
-            /* Màu vàng kim */
             margin-top: 5px;
             font-weight: 600;
             letter-spacing: 1px;
@@ -77,6 +75,33 @@
             margin-top: 5px;
         }
 
+        .badge-poisson {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+                border-color: var(--grad-end);
+            }
+
+            100% {
+                opacity: 0.8;
+            }
+        }
+
         .btn-ai {
             background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
             color: white;
@@ -89,6 +114,11 @@
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
             text-transform: uppercase;
+            transition: transform 0.2s;
+        }
+
+        .btn-ai:active {
+            transform: scale(0.98);
         }
 
         #resultArea {
@@ -105,7 +135,7 @@
         }
 
         .lucky-numbers {
-            font-size: 3rem;
+            font-size: 3.2rem;
             font-weight: 900;
             background: linear-gradient(to bottom, #fff, #a78bfa);
             -webkit-background-clip: text;
@@ -127,15 +157,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .energy-box img {
-            width: 100%;
-            max-width: 180px;
-            border-radius: 10px;
-            border: 2px solid var(--grad-start);
-            margin-bottom: 10px;
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
-        }
-
         .btn-share-lite {
             background: transparent;
             color: #a78bfa;
@@ -154,37 +175,34 @@
         <h1>THẦN TOÁN AI</h1>
 
         <div id="currentDate" class="date-display">...</div>
-
         <div class="subtitle">KẾT NỐI MA TRẬN SỐ</div>
+
         <button class="btn-ai" id="mainBtn" onclick="getSoVang()">✨ Xin số hôm nay</button>
 
         <div id="resultArea">
             <div class="analysis-card">
-                <div style="font-size: 0.65rem; color: var(--grad-start); text-transform: uppercase;">
+                <div
+                    style="font-size: 0.65rem; color: var(--grad-start); text-transform: uppercase; font-weight: bold;">
                     NHỊP RƠI NGÀY <span id="resultDate"></span>
                 </div>
                 <div class="lucky-numbers" id="textContent">-- - --</div>
-                <div class="ai-note">Ma trận thành công. Chúc đại thắng!</div>
+                <div class="ai-note">Mô hình Ma trận AI đã chốt số thành công.</div>
             </div>
+
             <div id="hideOnShare">
                 <div class="energy-box">
-                    <p style="color: var(--gold); font-size: 0.75rem; font-weight: bold; margin-bottom: 10px;">💎 NĂNG
-                        LƯỢNG KẾT NỐI</p>
-                    <img id="qrDonate"
-                        src="https://lh3.googleusercontent.com/rd-d/ALs6j_G0-gzYXfJqoUfcVcG7kmzdnfkk5qLSnizPkb5tFgp_hGiZS4HBnMW6ABT_lQ_V6L1ASucWIGat3wa_k1qfw_NgXStrUJ4Fennw2CmpeJedzSH-XfPDLKNczAX47TWFghH9yAsyYPCVUTQrFyXZL5dnTTQs0Btfw0ebUtGFkkvoX5401HESogdH0dueuqj-HJjP9i4t6ywN81jHI8lacNw7u9nlE2HSh7kjTGrLWCltAUKh_9YEXIKJW_7JalUqnLWkUeW2VSVbGvHXWKl32leFKZGrKbF66h_uzMtxXMw6GZJPQOWCQrBDChdf94Dmc7kufNq0bLr8lWK0wEf_mzyPRmCJ14j5suD1787xG3Ff6W2e71B31w7v1hxOMO_at9vHqUs9ShZbdv7JvvabcZ-Mdho9mToF8mxGSHSuqu8R-srDXfBJYKD72zCVNG3VPMisyu5Go_KRNh2O3QOayX-_bypYxFXlFiN-z_mOAW70cFbBseBt6Jc64OfN4YA91jgo9KAaSJ4syoYqpGk96LrFPOaovVLdR3rqg-tAGcKfNvvge82TUDAewWCcynhB4SrZbiU_nn5tDj6gGF-ca-sljNFq5C1Z6-UT-IkdGaOwtmfweSH-hnTt2UNC_blDHdpNm7WVHFWXsm4GuuDaAzT4NO-8rsv9XkLuq0pOPFWNTMWUZeGx-rQpxzqUvZpFTXZKbcn7wB85qq0NHoGU5nX3Wfz7bhpYbg4Nf0AAPWhLBHZnNM3XLas70yRK9a6hoCi5f9V6Y5lsZcAlL_Ak54pjpLpABvGB7GlpwYvF1xqNI3hnfoCtMh8NNHOGMH3doFn88ViXSosnUn-gwaf05b3sDW8SiYJ1pzd3L-B1hJRE2qe8O4YY0u1jqayXARKzfDIZyCJQbE5twdoimRoTxTGPP7MfK4ckDNS0CAcw87fpDhtTBv9g2go-ozBF8Pz1kFOWM54xG4lqDeoZzr-okuCF1MbzKTKoOxLxH-IdGFX2ISOM9sUzHkdV7klIWtfAnK8P_eI7QeU5=w2560-h1398?auditContext=prefetch"
-                        alt="Donate QR">
                     <div style="display:flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.65rem; color: #4b5563;">Lộc trời từ AI</span>
-                        <button class="btn-share-lite" onclick="handleShare()">Ẩn QR & Chia sẻ</button>
+                        <span style="font-size: 0.65rem; color: #4b5563;">Apple Edition 2025</span>
+                        <button class="btn-share-lite" onclick="handleShare()">Chia sẻ lộc lộc ✨</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxBwZIHHR7kxi1RO0TOTFtYrpjuxKN_SNLQWefSoTQjF-sm7rdTWuNZJ4EMy3uFj5YV/exec";
 
-        // Hàm lấy ngày hiện tại định dạng dd/mm/yyyy
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzYESE3owdk99xyRkULLMMHLqrqfMZV3oy-1dmDYQukWQ-b35LOAxtQZKYeb9zpI6zu/exec";
+
         function getTodayString() {
             const today = new Date();
             const dd = String(today.getDate()).padStart(2, '0');
@@ -193,32 +211,56 @@
             return `${dd}/${mm}/${yyyy}`;
         }
 
-        // Tự động điền ngày khi trang vừa load
         document.getElementById('currentDate').innerText = "📅 " + getTodayString();
 
         async function getSoVang() {
             const btn = document.getElementById('mainBtn');
             const res = document.getElementById('resultArea');
-            btn.innerText = "⏳ ĐANG GIẢI MÃ..."; btn.disabled = true;
+            btn.innerText = "⏳ ĐANG GIẢI MÃ...";
+            btn.disabled = true;
+
             try {
-                const response = await fetch(WEB_APP_URL, { method: 'POST' });
+                // Sử dụng mode CORS và redirect follow để tránh lỗi kết nối trạm AI
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'GET',
+                    mode: 'cors',
+                    redirect: 'follow'
+                });
+
                 const data = await response.json();
+
                 if (data.status === "success") {
                     document.getElementById('textContent').innerText = data.analysis;
-                    // Điền ngày vào kết quả
                     document.getElementById('resultDate').innerText = getTodayString();
-                    btn.style.display = 'none'; res.style.display = 'block';
+                    btn.style.display = 'none';
+                    res.style.display = 'block';
+                } else {
+                    throw new Error("Dữ liệu không hợp lệ");
                 }
-            } catch (e) { alert("Lỗi kết nối trạm AI!"); btn.disabled = false; }
+            } catch (e) {
+                console.error(e);
+                alert("Lỗi kết nối trạm AI! Hãy chắc chắn bạn đã Deploy Web App đúng cách.");
+                btn.innerText = "✨ Xin số hôm nay";
+                btn.disabled = false;
+            }
         }
+
         function handleShare() {
-            const target = document.getElementById('captureTarget'); const hide = document.getElementById('hideOnShare');
+            const target = document.getElementById('captureTarget');
+            const hide = document.getElementById('hideOnShare');
             hide.style.display = 'none';
+
             html2canvas(target, { backgroundColor: '#030712', borderRadius: 25 }).then(canvas => {
                 hide.style.display = 'block';
                 canvas.toBlob(blob => {
                     const file = new File([blob], 'thantoanai.png', { type: 'image/png' });
-                    if (navigator.share) navigator.share({ files: [file], title: 'Lộc THẦN TOÁN AI' });
+                    if (navigator.share) {
+                        navigator.share({
+                            files: [file],
+                            title: 'Lộc THẦN TOÁN AI',
+                            text: 'Kết quả dự đoán từ AI Poisson'
+                        });
+                    }
                 });
             });
         }
