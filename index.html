@@ -60,46 +60,22 @@
         .date-display {
             font-size: 0.8rem;
             color: #fbbf24;
-            margin-top: 5px;
+            margin: 15px 0;
             font-weight: 600;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        .subtitle {
-            font-size: 0.65rem;
-            color: #6b7280;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 5px;
-        }
-
         .badge-poisson {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 5px;
-            background: rgba(124, 58, 237, 0.2);
-            border: 1px solid rgba(124, 58, 237, 0.4);
-            padding: 4px 10px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 0.8;
-            }
-
-            50% {
-                opacity: 1;
-                border-color: var(--grad-end);
-            }
-
-            100% {
-                opacity: 0.8;
-            }
+            text-align: center;
+            gap: 20px;
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 35px;
         }
 
         .btn-ai {
@@ -114,24 +90,12 @@
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
             text-transform: uppercase;
-            transition: transform 0.2s;
-        }
-
-        .btn-ai:active {
-            transform: scale(0.98);
+            transition: 0.3s;
         }
 
         #resultArea {
             margin-top: 10px;
             display: none;
-        }
-
-        .analysis-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(124, 58, 237, 0.3);
-            margin-bottom: 15px;
         }
 
         .lucky-numbers {
@@ -144,27 +108,31 @@
             filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.4));
         }
 
-        .ai-note {
-            font-size: 0.7rem;
-            color: #9ca3af;
-            font-style: italic;
-        }
-
         .energy-box {
             background: rgba(0, 0, 0, 0.4);
             padding: 15px;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 15px;
+        }
+
+        .energy-box img {
+            width: 100%;
+            max-width: 180px;
+            border-radius: 12px;
+            border: 2px solid var(--grad-start);
+            margin-bottom: 12px;
         }
 
         .btn-share-lite {
             background: transparent;
             color: #a78bfa;
             border: 1px solid #374151;
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 10px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             cursor: pointer;
+            width: 100%;
         }
     </style>
 </head>
@@ -173,28 +141,37 @@
     <div class="ai-container" id="captureTarget">
         <span class="bot-icon">🤖</span>
         <h1>THẦN TOÁN AI</h1>
-
         <div id="currentDate" class="date-display">...</div>
-        <div class="subtitle">KẾT NỐI MA TRẬN SỐ</div>
+
+
+        <div class="badge-poisson">
+            <span
+                style="font-size: 0.65rem; font-weight: 900; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px;">
+                KẾT NỐI MA TRẬN SỐ ĐƯỢC LẬP BỞI 4 AI...... 🧠✨
+            </span>
+        </div>
 
         <button class="btn-ai" id="mainBtn" onclick="getSoVang()">✨ Xin số hôm nay</button>
 
         <div id="resultArea">
-            <div class="analysis-card">
+            <div
+                style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(124, 58, 237, 0.3);">
                 <div
                     style="font-size: 0.65rem; color: var(--grad-start); text-transform: uppercase; font-weight: bold;">
                     NHỊP RƠI NGÀY <span id="resultDate"></span>
                 </div>
                 <div class="lucky-numbers" id="textContent">-- - --</div>
-                <div class="ai-note">Mô hình Ma trận AI đã chốt số thành công.</div>
+                <div style="font-size: 0.7rem; color: #6b7280; font-style: italic;">Phân tích bởi Tứ đại chiến binh AI
+                </div>
             </div>
 
             <div id="hideOnShare">
                 <div class="energy-box">
-                    <div style="display:flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.65rem; color: #4b5563;">Apple Edition 2025</span>
-                        <button class="btn-share-lite" onclick="handleShare()">Chia sẻ lộc lộc ✨</button>
-                    </div>
+                    <p style="color: var(--gold); font-size: 0.75rem; font-weight: bold; margin-bottom: 10px;">💎 NĂNG
+                        LƯỢNG KẾT NỐI</p>
+                    <img src="https://raw.githubusercontent.com/9dpi/thantoan/refs/heads/main/qr-code-tech.jpg"
+                        alt="Donate QR">
+                    <button class="btn-share-lite" onclick="handleShare()">✨ Chia sẻ lộc may mắn</button>
                 </div>
             </div>
         </div>
@@ -205,10 +182,7 @@
 
         function getTodayString() {
             const today = new Date();
-            const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const yyyy = today.getFullYear();
-            return `${dd}/${mm}/${yyyy}`;
+            return today.toLocaleDateString('vi-VN');
         }
 
         document.getElementById('currentDate').innerText = "📅 " + getTodayString();
@@ -216,51 +190,32 @@
         async function getSoVang() {
             const btn = document.getElementById('mainBtn');
             const res = document.getElementById('resultArea');
-            btn.innerText = "⏳ ĐANG GIẢI MÃ...";
-            btn.disabled = true;
+            btn.innerText = "⏳ ĐANG GIẢI MÃ..."; btn.disabled = true;
 
             try {
-                // Sử dụng mode CORS và redirect follow để tránh lỗi kết nối trạm AI
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'GET',
-                    mode: 'cors',
-                    redirect: 'follow'
-                });
-
+                const response = await fetch(WEB_APP_URL, { method: 'GET', mode: 'cors', redirect: 'follow' });
                 const data = await response.json();
-
                 if (data.status === "success") {
                     document.getElementById('textContent').innerText = data.analysis;
                     document.getElementById('resultDate').innerText = getTodayString();
-                    btn.style.display = 'none';
-                    res.style.display = 'block';
-                } else {
-                    throw new Error("Dữ liệu không hợp lệ");
+                    btn.style.display = 'none'; res.style.display = 'block';
                 }
             } catch (e) {
-                console.error(e);
-                alert("Lỗi kết nối trạm AI! Hãy chắc chắn bạn đã Deploy Web App đúng cách.");
-                btn.innerText = "✨ Xin số hôm nay";
-                btn.disabled = false;
+                alert("Lỗi kết nối trạm AI!");
+                btn.innerText = "✨ Xin số hôm nay"; btn.disabled = false;
             }
         }
 
         function handleShare() {
             const target = document.getElementById('captureTarget');
             const hide = document.getElementById('hideOnShare');
-            hide.style.display = 'none';
+            hide.style.display = 'none'; // Ẩn QR trước khi chụp
 
-            html2canvas(target, { backgroundColor: '#030712', borderRadius: 25 }).then(canvas => {
-                hide.style.display = 'block';
+            html2canvas(target, { backgroundColor: '#030712', borderRadius: 25, scale: 2 }).then(canvas => {
+                hide.style.display = 'block'; // Hiện lại QR sau khi chụp
                 canvas.toBlob(blob => {
-                    const file = new File([blob], 'thantoanai.png', { type: 'image/png' });
-                    if (navigator.share) {
-                        navigator.share({
-                            files: [file],
-                            title: 'Lộc THẦN TOÁN AI',
-                            text: 'Kết quả dự đoán từ AI Poisson'
-                        });
-                    }
+                    const file = new File([blob], 'locai777.png', { type: 'image/png' });
+                    if (navigator.share) navigator.share({ files: [file], title: 'Lộc THẦN TOÁN AI' });
                 });
             });
         }
