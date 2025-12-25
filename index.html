@@ -141,8 +141,7 @@
     <div class="ai-container" id="captureTarget">
         <span class="bot-icon">🤖</span>
         <h1>THẦN TOÁN AI</h1>
-        <div id="currentDate" class="date-display">...</div>
-
+        <div id="currentDate" class="date-display">ĐANG KẾT NỐI...</div>
 
         <div class="badge-poisson">
             <span
@@ -151,17 +150,17 @@
             </span>
         </div>
 
-        <button class="btn-ai" id="mainBtn" onclick="getSoVang()">✨ Xin số hôm nay</button>
+        <button class="btn-ai" id="mainBtn" onclick="getSoVang()">✨ XIN SỐ MAY MẮN</button>
 
         <div id="resultArea">
             <div
                 style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(124, 58, 237, 0.3);">
                 <div
                     style="font-size: 0.65rem; color: var(--grad-start); text-transform: uppercase; font-weight: bold;">
-                    NHỊP RƠI NGÀY <span id="resultDate"></span>
+                    DỰ BÁO NHỊP RƠI: <span id="resultDate"></span>
                 </div>
                 <div class="lucky-numbers" id="textContent">-- - --</div>
-                <div style="font-size: 0.7rem; color: #6b7280; font-style: italic;">Phân tích bởi Tứ đại chiến binh AI
+                <div style="font-size: 0.7rem; color: #6b7280; font-style: italic;">Phân tích từ 15 ngày lịch sử XSMB
                 </div>
             </div>
 
@@ -171,51 +170,93 @@
                         LƯỢNG KẾT NỐI</p>
                     <img src="https://raw.githubusercontent.com/9dpi/thantoan/refs/heads/main/qr-code-tech.jpg"
                         alt="Donate QR">
-                    <button class="btn-share-lite" onclick="handleShare()">✨ Chia sẻ lộc may mắn</button>
+                    <button class="btn-share-lite" onclick="handleShare()">✨ CHIA SẺ LỘC MAY MẮN</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzYESE3owdk99xyRkULLMMHLqrqfMZV3oy-1dmDYQukWQ-b35LOAxtQZKYeb9zpI6zu/exec";
+        // Cập nhật URL WebApp mới nhất của bạn tại đây
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxLi0Nzii4AkxIpGmgzhrofrMMzTWtm9Ae-V7dWqddi4ZydCKr7JTdqmmCkKy10Mps/exec";
 
-        function getTodayString() {
-            const today = new Date();
-            return today.toLocaleDateString('vi-VN');
+        /**
+         * Hàm tính toán ngày dự báo thông minh
+         * Nếu sau 18:30 (giờ XSMB xong), tự động hiển thị ngày mai
+         */
+        function getSmartDate() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+
+            // Logic: Nếu >= 18h30 thì nhảy sang ngày hôm sau
+            if (hours > 18 || (hours === 18 && minutes >= 30)) {
+                now.setDate(now.getDate() + 1);
+            }
+            return now.toLocaleDateString('vi-VN');
         }
 
-        document.getElementById('currentDate').innerText = "📅 " + getTodayString();
+        // Hiển thị ngày ngay khi load trang
+        document.getElementById('currentDate').innerText = "📅 DỰ BÁO NGÀY: " + getSmartDate();
 
         async function getSoVang() {
             const btn = document.getElementById('mainBtn');
             const res = document.getElementById('resultArea');
-            btn.innerText = "⏳ ĐANG GIẢI MÃ..."; btn.disabled = true;
+            const luckyText = document.getElementById('textContent');
+
+            btn.innerText = "⏳ ĐANG GIẢI MÃ...";
+            btn.disabled = true;
 
             try {
-                const response = await fetch(WEB_APP_URL, { method: 'GET', mode: 'cors', redirect: 'follow' });
+                // Sử dụng Fetch với redirect follow để tránh lỗi CORS trên GitHub Pages
+                const response = await fetch(WEB_APP_URL);
                 const data = await response.json();
-                if (data.status === "success") {
-                    document.getElementById('textContent').innerText = data.analysis;
-                    document.getElementById('resultDate').innerText = getTodayString();
-                    btn.style.display = 'none'; res.style.display = 'block';
+
+                if (data.status === "success" || data.success) {
+                    // Cập nhật số vàng
+                    luckyText.innerText = data.analysis || data.data.join(" - ");
+
+                    // Cập nhật ngày dự báo cuối cùng
+                    document.getElementById('resultDate').innerText = getSmartDate();
+
+                    btn.style.display = 'none';
+                    res.style.display = 'block';
+                } else {
+                    throw new Error("Data error");
                 }
             } catch (e) {
-                alert("Lỗi kết nối trạm AI!");
-                btn.innerText = "✨ Xin số hôm nay"; btn.disabled = false;
+                console.error(e);
+                alert("Hệ thống AI đang bảo trì, vui lòng thử lại sau!");
+                btn.innerText = "✨ XIN SỐ HÔM NAY";
+                btn.disabled = false;
             }
         }
 
         function handleShare() {
             const target = document.getElementById('captureTarget');
             const hide = document.getElementById('hideOnShare');
-            hide.style.display = 'none'; // Ẩn QR trước khi chụp
+            hide.style.display = 'none';
 
-            html2canvas(target, { backgroundColor: '#030712', borderRadius: 25, scale: 2 }).then(canvas => {
-                hide.style.display = 'block'; // Hiện lại QR sau khi chụp
+            html2canvas(target, {
+                backgroundColor: '#030712',
+                borderRadius: 25,
+                scale: 2
+            }).then(canvas => {
+                hide.style.display = 'block';
                 canvas.toBlob(blob => {
-                    const file = new File([blob], 'locai777.png', { type: 'image/png' });
-                    if (navigator.share) navigator.share({ files: [file], title: 'Lộc THẦN TOÁN AI' });
+                    const file = new File([blob], 'thantoan_ai.png', { type: 'image/png' });
+                    if (navigator.share) {
+                        navigator.share({
+                            files: [file],
+                            title: 'Kết quả giải mã Thần Toán AI'
+                        }).catch(console.error);
+                    } else {
+                        // Fallback tải ảnh nếu trình duyệt không hỗ trợ Share API
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'thantoan_ai.png';
+                        link.click();
+                    }
                 });
             });
         }
