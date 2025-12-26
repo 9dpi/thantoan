@@ -26,19 +26,28 @@
             align-items: center;
             min-height: 100vh;
             padding: 10px;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .ai-container {
             background: var(--card);
             width: 100%;
             max-width: 360px;
-            padding: 20px 15px;
+            padding: 25px 20px;
             border-radius: 25px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
             backdrop-filter: blur(15px);
             box-shadow: 0 0 40px rgba(37, 99, 235, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        /* Lớp đặc biệt khi chụp ảnh để ảnh rõ nét */
+        .capturing {
+            background: #0f172a !important;
+            backdrop-filter: none !important;
+            border: 2px solid var(--grad-start) !important;
+            box-shadow: none !important;
         }
 
         .bot-icon {
@@ -58,8 +67,8 @@
         }
 
         .date-display {
-            font-size: 0.8rem;
-            color: #fbbf24;
+            font-size: 0.85rem;
+            color: var(--gold);
             margin: 15px 0;
             font-weight: 600;
             letter-spacing: 1px;
@@ -67,15 +76,11 @@
         }
 
         .badge-poisson {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            gap: 20px;
             background: rgba(124, 58, 237, 0.15);
             border: 1px solid rgba(124, 58, 237, 0.3);
-            padding: 20px;
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
         }
 
         .btn-ai {
@@ -90,7 +95,6 @@
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
             text-transform: uppercase;
-            transition: 0.3s;
         }
 
         #resultArea {
@@ -104,8 +108,15 @@
             background: linear-gradient(to bottom, #fff, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 5px 0;
+            margin: 10px 0;
             filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.4));
+        }
+
+        /* Chữ số khi chụp ảnh sẽ chuyển sang màu Vàng Gold sáng */
+        .capturing .lucky-numbers {
+            background: none !important;
+            -webkit-text-fill-color: var(--gold) !important;
+            color: var(--gold) !important;
         }
 
         .energy-box {
@@ -118,21 +129,30 @@
 
         .energy-box img {
             width: 100%;
-            max-width: 180px;
+            max-width: 150px;
             border-radius: 12px;
             border: 2px solid var(--grad-start);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
-        .btn-share-lite {
-            background: transparent;
-            color: #a78bfa;
-            border: 1px solid #374151;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 0.75rem;
+        .btn-share-main {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: bold;
             cursor: pointer;
             width: 100%;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        #watermark {
+            display: none;
+            font-size: 0.65rem;
+            color: #4b5563;
+            margin-top: 15px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -157,11 +177,10 @@
                 style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(124, 58, 237, 0.3);">
                 <div
                     style="font-size: 0.65rem; color: var(--grad-start); text-transform: uppercase; font-weight: bold;">
-                    DỰ BÁO NHỊP RƠI: <span id="resultDate"></span>
+                    DỰ BÁO AI MATRIX NGÀY: <span id="resultDate"></span>
                 </div>
                 <div class="lucky-numbers" id="textContent">-- - --</div>
-                <div style="font-size: 0.7rem; color: #6b7280; font-style: italic;">Phân tích từ 15 ngày lịch sử XSMB
-                </div>
+                <div style="font-size: 0.7rem; color: #6b7280;">Ma trận AI Reloaded ...</div>
             </div>
 
             <div id="hideOnShare">
@@ -170,33 +189,25 @@
                         LƯỢNG KẾT NỐI</p>
                     <img src="https://raw.githubusercontent.com/9dpi/thantoan/refs/heads/main/qr-code-tech.jpg"
                         alt="Donate QR">
-                    <button class="btn-share-lite" onclick="handleShare()">✨ CHIA SẺ LỘC MAY MẮN</button>
+                    <button class="btn-share-main" onclick="handleShare()">📲 LƯU & CHIA SẺ LỘC</button>
                 </div>
             </div>
+
+            <div id="watermark">Cung cấp bởi 9dpi.github.io/thantoan/</div>
         </div>
     </div>
 
     <script>
-        // Cập nhật URL WebApp mới nhất của bạn tại đây
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxLi0Nzii4AkxIpGmgzhrofrMMzTWtm9Ae-V7dWqddi4ZydCKr7JTdqmmCkKy10Mps/exec";
 
-        /**
-         * Hàm tính toán ngày dự báo thông minh
-         * Nếu sau 18:30 (giờ XSMB xong), tự động hiển thị ngày mai
-         */
         function getSmartDate() {
             const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-
-            // Logic: Nếu >= 18h30 thì nhảy sang ngày hôm sau
-            if (hours > 18 || (hours === 18 && minutes >= 30)) {
+            if (now.getHours() > 18 || (now.getHours() === 18 && now.getMinutes() >= 30)) {
                 now.setDate(now.getDate() + 1);
             }
             return now.toLocaleDateString('vi-VN');
         }
 
-        // Hiển thị ngày ngay khi load trang
         document.getElementById('currentDate').innerText = "📅 DỰ BÁO NGÀY: " + getSmartDate();
 
         async function getSoVang() {
@@ -208,57 +219,66 @@
             btn.disabled = true;
 
             try {
-                // Sử dụng Fetch với redirect follow để tránh lỗi CORS trên GitHub Pages
                 const response = await fetch(WEB_APP_URL);
                 const data = await response.json();
 
                 if (data.status === "success" || data.success) {
-                    // Cập nhật số vàng
-                    luckyText.innerText = data.analysis || data.data.join(" - ");
-
-                    // Cập nhật ngày dự báo cuối cùng
+                    luckyText.innerText = data.analysis || (data.data ? data.data.join(" - ") : "-- - --");
                     document.getElementById('resultDate').innerText = getSmartDate();
-
                     btn.style.display = 'none';
                     res.style.display = 'block';
-                } else {
-                    throw new Error("Data error");
                 }
             } catch (e) {
-                console.error(e);
-                alert("Hệ thống AI đang bảo trì, vui lòng thử lại sau!");
-                btn.innerText = "✨ XIN SỐ HÔM NAY";
+                alert("Hệ thống AI đang bảo trì!");
+                btn.innerText = "✨ XIN SỐ LẠI";
                 btn.disabled = false;
             }
         }
 
-        function handleShare() {
+        async function handleShare() {
             const target = document.getElementById('captureTarget');
             const hide = document.getElementById('hideOnShare');
-            hide.style.display = 'none';
+            const watermark = document.getElementById('watermark');
+            const luckyNumbers = document.getElementById('textContent').innerText;
 
-            html2canvas(target, {
-                backgroundColor: '#030712',
-                borderRadius: 25,
-                scale: 2
-            }).then(canvas => {
-                hide.style.display = 'block';
-                canvas.toBlob(blob => {
-                    const file = new File([blob], 'thantoan_ai.png', { type: 'image/png' });
+            // Tối ưu hóa giao diện để chụp ảnh đẹp nhất
+            target.classList.add('capturing');
+            hide.style.display = 'none';
+            watermark.style.display = 'block';
+
+            try {
+                const canvas = await html2canvas(target, {
+                    backgroundColor: '#0f172a',
+                    scale: 3, // Tăng độ nét gấp 3 lần
+                    borderRadius: 25
+                });
+
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], `ThanToanAI_${getSmartDate().replace(/\//g, '-')}.png`, { type: 'image/png' });
+
                     if (navigator.share) {
-                        navigator.share({
-                            files: [file],
-                            title: 'Kết quả giải mã Thần Toán AI'
-                        }).catch(console.error);
+                        await navigator.share({
+                            title: 'Thần Toán AI 777',
+                            text: `🍎 DỰ ÁN APPLE \n🎯 3 Số Vàng: ${luckyNumbers}`,
+                            files: [file]
+                        });
                     } else {
-                        // Fallback tải ảnh nếu trình duyệt không hỗ trợ Share API
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
-                        link.download = 'thantoan_ai.png';
+                        link.download = `ThanToanAI_Vang_${luckyNumbers.replace(/ /g, '')}.png`;
                         link.click();
                     }
+
+                    // Khôi phục giao diện
+                    target.classList.remove('capturing');
+                    hide.style.display = 'block';
+                    watermark.style.display = 'none';
                 });
-            });
+            } catch (err) {
+                target.classList.remove('capturing');
+                hide.style.display = 'block';
+                watermark.style.display = 'none';
+            }
         }
     </script>
 </body>
